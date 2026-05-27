@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glass Finder </title>
+  <title>Glass Finder - Screen Protector Compatibility</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -295,12 +295,6 @@
       color: var(--text-muted);
     }
 
-    .results-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
     .result-card {
       display: flex;
       align-items: center;
@@ -310,13 +304,8 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
       transition: all 0.3s ease;
-      animation: slideIn 0.4s ease-out backwards;
+      animation: slideIn 0.4s ease-out;
     }
-
-    .result-card:nth-child(1) { animation-delay: 0.1s; }
-    .result-card:nth-child(2) { animation-delay: 0.2s; }
-    .result-card:nth-child(3) { animation-delay: 0.3s; }
-    .result-card:nth-child(4) { animation-delay: 0.4s; }
 
     @keyframes slideIn {
       from {
@@ -340,10 +329,11 @@
       flex-shrink: 0;
     }
 
-    .model-name {
+    .compatible-models {
       font-size: 1rem;
       font-weight: 500;
       color: var(--text-primary);
+      line-height: 1.5;
     }
 
     @media (max-width: 640px) {
@@ -379,7 +369,7 @@
   <div class="container">
     <div class="glass-card">
       <h1 class="title">Glass Finder</h1>
-      <p class="subtitle">پیدا کردن گلس مشابه با یک کلیک</p>
+      <p class="subtitle">Find compatible screen protectors for your phone</p>
 
       <div class="search-container">
         <input
@@ -483,15 +473,11 @@
           <h3>Compatible with <span class="highlight">${matchedModel}</span></h3>
           <p class="result-count">${compatibleModels.length} model${compatibleModels.length !== 1 ? 's' : ''} found</p>
         </div>
-        <div class="results-grid">
-          ${compatibleModels.map(model => `
-            <div class="result-card">
-              <svg class="checkmark" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span class="model-name">${model}</span>
-            </div>
-          `).join('')}
+        <div class="result-card">
+          <svg class="checkmark" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span class="compatible-models">${compatibleModels.join(', ')}</span>
         </div>
       `;
     }
