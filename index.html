@@ -1,16 +1,513 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Glass Finder - Screen Protector Compatibility</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glass Finder - Screen Protector Compatibility</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #2563eb;
+      --primary-blue-light: #3b82f6;
+      --primary-blue-dark: #1d4ed8;
+      --accent-cyan: #06b6d4;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a0a 0%, #0f172a 25%, #1e293b 50%, #0f172a 75%, #0a0a0a 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite, oilEffect 20s ease-in-out infinite;
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(30, 58, 138, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes oilEffect {
+      0%, 100% {
+        filter: hue-rotate(0deg) brightness(1);
+      }
+      25% {
+        filter: hue-rotate(5deg) brightness(1.02);
+      }
+      50% {
+        filter: hue-rotate(-5deg) brightness(1);
+      }
+      75% {
+        filter: hue-rotate(3deg) brightness(1.01);
+      }
+    }
+
+    .container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      padding: 3rem;
+      max-width: 540px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+      border-radius: 24px;
+      z-index: -1;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .title {
+      font-size: 2.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    .search-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      font-family: inherit;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-input:focus {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    .search-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      font-family: inherit;
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 50%, var(--accent-cyan) 100%);
+      background-size: 200% 200%;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+    .search-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+      background-position: 100% 100%;
+    }
+
+    .search-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .search-icon {
+      flex-shrink: 0;
+    }
+
+    .results-container {
+      min-height: 100px;
+    }
+
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--primary-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .message-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 2rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .message-card.error {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .message-icon {
+      color: var(--text-muted);
+    }
+
+    .message-card.error .message-icon {
+      color: var(--error);
+    }
+
+    .message-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .message-card .sub-message {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    .result-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .result-header h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .result-header .highlight {
+      background: linear-gradient(135deg, var(--primary-blue-light) 0%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .result-count {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .results-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .result-card {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 1rem 1.25rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      animation: slideIn 0.4s ease-out backwards;
+    }
+
+    .result-card:nth-child(1) { animation-delay: 0.1s; }
+    .result-card:nth-child(2) { animation-delay: 0.2s; }
+    .result-card:nth-child(3) { animation-delay: 0.3s; }
+    .result-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .result-card:hover {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%);
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateX(5px);
+    }
+
+    .checkmark {
+      color: var(--success);
+      flex-shrink: 0;
+    }
+
+    .model-name {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .glass-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .title {
+        font-size: 2rem;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+      }
+
+      .search-input,
+      .search-button {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+      }
+
+      .result-card {
+        padding: 0.875rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="glass-card">
+      <h1 class="title">Glass Finder</h1>
+      <p class="subtitle">Find compatible screen protectors for your phone</p>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Enter phone model... (e.g. A15)"
+          autocomplete="off"
+        >
+        <button id="searchBtn" class="search-button">
+          <span>Search</span>
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div id="results" class="results-container"></div>
+    </div>
+  </div>
+
+  <script>
+    // Compatibility data directly embedded
+    const compatibilityGroups = [
+      {
+        id: 1,
+        name: 'Universal Fit',
+        models: ['Poco X3', 'A21s', 'Note 11 Pro']
+      },
+      {
+        id: 2,
+        name: 'Samsung A Series Compatible',
+        models: ['A15', 'A26', 'A17']
+      },
+      {
+        id: 3,
+        name: 'Samsung A Series Compatible',
+        models: ['A12', 'A13']
+      }
+    ];
+
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const resultsContainer = document.getElementById('results');
+
+    function searchCompatibleModels(searchTerm) {
+      const term = searchTerm.trim().toLowerCase();
+
+      if (!term) {
+        resultsContainer.innerHTML = `
+          <div class="message-card">
+            <svg class="message-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4"></path>
+              <path d="M12 8h.01"></path>
+            </svg>
+            <p>Please enter a phone model to search</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Find the model and its group
+      let matchedModel = null;
+      let matchedGroup = null;
+
+      for (const group of compatibilityGroups) {
+        const found = group.models.find(model =>
+          model.toLowerCase().includes(term)
+        );
+        if (found) {
+          matchedModel = found;
+          matchedGroup = group;
+          break;
+        }
+      }
+
+      if (!matchedModel) {
+        resultsContainer.innerHTML = `
+          <div class="message-card error">
+            <svg class="message-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="m15 9-6 6"></path>
+              <path d="m9 9 6 6"></path>
+            </svg>
+            <p>No compatible models found</p>
+            <p class="sub-message">Try searching for: A15, A26, A17, A12, A13, A21s, Poco X3, Note 11 Pro</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Get compatible models from the same group
+      const compatibleModels = matchedGroup.models.filter(model =>
+        model.toLowerCase() !== matchedModel.toLowerCase()
+      );
+
+      resultsContainer.innerHTML = `
+        <div class="result-header">
+          <h3>Compatible with <span class="highlight">${matchedModel}</span></h3>
+          <p class="result-count">${compatibleModels.length} model${compatibleModels.length !== 1 ? 's' : ''} found</p>
+        </div>
+        <div class="results-grid">
+          ${compatibleModels.map(model => `
+            <div class="result-card">
+              <svg class="checkmark" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span class="model-name">${model}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    searchBtn.addEventListener('click', () => {
+      searchCompatibleModels(searchInput.value);
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        searchCompatibleModels(searchInput.value);
+      }
+    });
+
+    // Focus input on load
+    searchInput.focus();
+  </script>
+</body>
 </html>
