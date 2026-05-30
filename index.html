@@ -369,7 +369,7 @@
   <div class="container">
     <div class="glass-card">
       <h1 class="title">Glass Finder</h1>
-      <p class="subtitle">گلس های مشابه را پیدا کنید</p>
+      <p class="subtitle">با یه کلیک گلس مشابه رو پیدا کن</p>
 
       <div class="search-container">
         <input
@@ -461,7 +461,6 @@
               <path d="m9 9 6 6"></path>
             </svg>
             <p>مدلی یافت نشد</p>
-            <p class="sub-message">مدل های موجود: A15, A26, A17, A12, A13, A21s, Poco X3, Note 11 Pro</p>
           </div>
         `;
         return;
@@ -475,7 +474,7 @@
       resultsContainer.innerHTML = `
         <div class="result-header">
           <h3>مشابه با <span class="highlight">${matchedModel}</span></h3>
-          <p class="result-count">${compatibleModels.length} مدل یافت شد</p>
+          <p class="result-count">${compatibleModels.length} مدل مشابه</p>
         </div>
         <div class="result-card">
           <svg class="checkmark" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
